@@ -27,22 +27,20 @@ jobs:
           unzip -q 4Numbers_Android_Project.zip -d android_project
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
       - name: Build Android APK
         run: |
           SETTINGS_FILE="$(find android_project -type f -name settings.gradle -print -quit)"
-
           if [ -z "$SETTINGS_FILE" ]; then
             echo "ERROR: settings.gradle was not found"
             find android_project -maxdepth 4 -type f | sort
             exit 1
           fi
-
-          PROJECT_DIR="$(dirname "$SETTINGS_FILE")"
-          gradle -p "$PROJECT_DIR" assembleDebug
+          cd "$(dirname "$SETTINGS_FILE")"
+          gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
